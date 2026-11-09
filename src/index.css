@@ -7,11 +7,6 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
-/* Force border-radius to 0 for all elements to get flat sharp design */
-*, *::before, *::after {
-  border-radius: 0px !important;
-}
-
 @layer base {
   body {
     background-color: #f8fafc;
