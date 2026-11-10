@@ -1126,7 +1126,7 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen bg-slate-50 text-slate-800 flex flex-col md:flex-row font-sans relative selection:bg-orange-500/20 selection:text-orange-950 overflow-hidden">
+    <div className="h-screen bg-slate-100 text-slate-800 flex flex-col md:flex-row font-sans relative selection:bg-orange-500/20 selection:text-orange-950 overflow-hidden">
       {/* Toast Notification */}
       <AnimatePresence>
         {notification && (
@@ -1159,31 +1159,38 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Left Navigation Sidebar - Sleek Interface (Desktop permanent, Mobile slide drawer) */}
-      <aside className={`no-print bg-[#0F172A] text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800 h-screen overflow-y-auto rounded-none z-50 transition-transform duration-300
-        fixed inset-y-0 left-0 w-64 md:static md:translate-x-0 ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+      {/* Left Navigation Sidebar — floating card, fully rounded on all sides */}
+      <aside className={`no-print shrink-0 z-50 transition-all duration-300
+        fixed inset-y-0 left-0 w-[260px]
+        md:relative md:translate-x-0 md:w-[255px] md:m-3 md:h-[calc(100vh-24px)]
+        ${isMobileSidebarOpen ? 'translate-x-0 m-3 h-[calc(100vh-24px)] rounded-2xl' : '-translate-x-full md:translate-x-0'}
+        bg-[#0f1218] rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col`}>
 
-        <div className="p-6 flex items-center justify-between border-b border-slate-800/50">
+        {/* ── Logo Header ── */}
+        <div className="px-4 py-4 flex items-center justify-between border-b border-white/[0.05] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white border border-slate-700 flex items-center justify-center p-0.5 shrink-0">
-                <img src="/logo_alimobile.jpeg" alt="Ali Mobile" className="w-full h-full object-contain" />
-              </div>
-            <span className="text-white font-bold text-xl tracking-tight">Ali Mobile</span>
+            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1 shrink-0 shadow-md">
+              <img src="/logo_alimobile.jpeg" alt="Ali Mobile" className="w-full h-full object-contain rounded-lg" />
+            </div>
+            <div>
+              <p className="text-white font-black text-sm tracking-tight font-display uppercase italic leading-tight">Ali Mobile</p>
+              <p className="text-[10px] text-slate-500 tracking-widest uppercase font-medium leading-tight mt-0.5">Agents Portal</p>
+            </div>
           </div>
-          {/* Close button on mobile */}
           <button
             onClick={() => setIsMobileSidebarOpen(false)}
-            className="md:hidden text-slate-400 hover:text-white p-1 hover:bg-slate-800 rounded-none transition"
+            className="md:hidden text-slate-500 hover:text-white p-1.5 hover:bg-white/[0.06] rounded-lg transition"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="flex-grow p-4 space-y-6">
-          <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold px-3 block">
-            MENU DE SUIVI
-          </span>
-          <ul className="space-y-2">
+        {/* ── Navigation Items ── */}
+        <div className="flex-grow px-3 py-3 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold px-2 pb-3">
+            Navigation
+          </p>
+          <ul className="space-y-0.5">
             {[
               { id: 'dashboard', label: 'Tableau de bord', icon: TrendingUp },
               { id: 'contracts', label: currentUser?.role === 'operator' ? 'Contrats (Lecture)' : 'Voir ses clients', icon: Users },
@@ -1212,17 +1219,19 @@ export default function App() {
                       setSelectedContract(null);
                       setIsMobileSidebarOpen(false); // Auto close mobile sidebar
                     }}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-none text-sm transition-all duration-200 border ${isActive
-                      ? 'bg-orange-500/10 text-orange-400 border-orange-500/20 font-bold'
-                      : 'text-slate-300 hover:bg-slate-800 border-transparent hover:text-white'
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group ${isActive
+                      ? 'bg-orange-500/20 text-orange-400 font-semibold'
+                      : 'text-slate-400 hover:bg-white/[0.05] hover:text-slate-200'
                       }`}
                   >
-                    <div className="flex items-center space-x-3">
-                      <Icon className={`w-5 h-5 ${isActive ? 'text-orange-400' : 'text-slate-400'}`} />
-                      <span>{item.label}</span>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${isActive ? 'bg-orange-500/25' : 'bg-white/[0.05]'}`}>
+                        <Icon className={`w-4 h-4 ${isActive ? 'text-orange-400' : 'text-slate-500'}`} />
+                      </div>
+                      <span className="truncate">{item.label}</span>
                     </div>
                     {item.badge && (
-                      <span className="bg-red-500 text-white font-mono text-[10px] font-bold px-2 py-0.5 rounded-none">
+                      <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-1 shrink-0">
                         {item.badge}
                       </span>
                     )}
@@ -1233,7 +1242,7 @@ export default function App() {
           </ul>
         </div>
 
-        {/* Quick Stats sidebar footer with active agent info matching mockup */}
+        {/* ── User Profile Footer ── */}
         <div
           onClick={() => {
             setActiveTab('profile');
@@ -1241,80 +1250,89 @@ export default function App() {
             setSelectedContract(null);
             setIsMobileSidebarOpen(false);
           }}
-          className="p-6 border-t border-slate-800 cursor-pointer hover:bg-slate-800/30 transition-all group select-none"
+          className="mx-3 mb-3 p-3 rounded-xl bg-white/[0.04] border border-white/[0.06] cursor-pointer hover:bg-white/[0.07] hover:border-orange-500/25 transition-all group select-none shrink-0"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-none bg-slate-700 group-hover:bg-orange-500 transition-colors flex items-center justify-center font-bold text-white uppercase text-sm shadow-md">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white uppercase text-sm shadow-lg shadow-orange-500/25 shrink-0">
               {activeAgentId === 'admin'
                 ? (currentUser?.name?.split(' ').map(n => n[0]).join('') || 'AD')
                 : agents.find(a => a.id === activeAgentId)?.name?.slice(0, 2) || 'AG'}
             </div>
-            <div className="truncate flex-grow">
-              <p className="text-sm font-semibold text-white truncate group-hover:text-orange-400 transition-colors">
+            <div className="truncate flex-grow min-w-0">
+              <p className="text-sm font-semibold text-white truncate leading-tight">
                 {activeAgentId === 'admin' ? (currentUser?.name || 'Administrateur') : agents.find(a => a.id === activeAgentId)?.name}
               </p>
-              <p className="text-xs text-slate-500 font-mono">
+              <p className="text-[11px] text-slate-500 font-mono truncate mt-0.5">
                 {activeAgentId === 'admin' ? `Code: ${currentUser?.code || 'N/A'}` : `Agent: ${agents.find(a => a.id === activeAgentId)?.code}`}
               </p>
             </div>
+            <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-orange-400 transition-colors shrink-0" />
           </div>
         </div>
       </aside>
 
       {/* Right side container - Header + independent scrolling Main Panel */}
       <div className="flex-grow flex flex-col h-screen overflow-hidden">
-        {/* Top Header - Sleek Style matching Design HTML */}
-        <header className="no-print h-20 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between px-4 md:px-8 z-40 shadow-sm rounded-none">
-          {/* Logo visible on mobile - Clickable to open sidebar drawer with active agent info */}
+        {/* Top Header */}
+        <header className="no-print bg-white border-b border-slate-200/80 shrink-0 flex items-center justify-between px-4 md:px-6 z-40 h-16 shadow-sm">
+
+          {/* Mobile: logo + hamburger */}
           <div
             onClick={() => setIsMobileSidebarOpen(true)}
-            className="flex md:hidden items-center gap-3 cursor-pointer group hover:opacity-80 transition select-none"
+            className="flex md:hidden items-center gap-2.5 cursor-pointer group select-none"
           >
-            <div className="w-9 h-9 bg-white border border-slate-200 flex items-center justify-center p-0.5 shrink-0">
-                <img src="/logo_alimobile.jpeg" alt="Ali Mobile" className="w-full h-full object-contain" />
-              </div>
-            <span className="text-slate-900 font-bold text-sm tracking-tight uppercase">Ali Mobile</span>
-            <Menu className="w-5 h-5 text-slate-500 ml-1 group-hover:text-orange-500 transition" />
+            <div className="w-8 h-8 bg-white border border-slate-200 rounded-lg flex items-center justify-center p-0.5 shrink-0">
+              <img src="/logo_alimobile.jpeg" alt="Ali Mobile" className="w-full h-full object-contain rounded-md" />
+            </div>
+            <span className="text-slate-800 font-bold text-sm tracking-tight">Ali Mobile</span>
+            <Menu className="w-4 h-4 text-slate-400 ml-0.5 group-hover:text-orange-500 transition" />
           </div>
 
-          <div className="hidden md:block"></div>
+          {/* Desktop: current page breadcrumb */}
+          <div className="hidden md:flex items-center gap-2">
+            <div className="w-1.5 h-5 bg-orange-500 rounded-full" />
+            <span className="text-slate-800 font-semibold text-sm capitalize">
+              {activeTab === 'dashboard' ? 'Tableau de bord'
+                : activeTab === 'contracts' ? 'Clients & Contrats'
+                : activeTab === 'new_contract' ? 'Nouveau contrat'
+                : activeTab === 'new_payment' ? 'Nouveau paiement'
+                : activeTab === 'knox' ? 'Retards & Knox'
+                : activeTab === 'agents' ? 'Statistiques agents'
+                : activeTab === 'knox_stock' ? 'Stock Samsung Knox'
+                : activeTab === 'transactions' ? 'Transactions Utilités'
+                : activeTab === 'settings' ? 'Paramètres'
+                : activeTab === 'profile' ? 'Mon profil'
+                : 'Ali Mobile'}
+            </span>
+          </div>
 
-          {/* User Session Switcher (Admin vs Agent) & Logout */}
-          <div className="flex items-center space-x-2">
-            {currentUser?.role === 'admin' ? (
-              <div className="hidden">
-                {/**<Briefcase className="w-3.5 h-3.5 text-slate-500 mr-2 shrink-0" />
-                <select 
-                  value={activeAgentId} 
-                  onChange={(e) => handleAgentChange(e.target.value)}
-                  className="bg-transparent text-slate-800 font-semibold focus:outline-none cursor-pointer text-xs"
-                >
-                  <option value="admin" className="bg-white text-slate-800">⚙ Franck Alliance (Admin)</option>
-                  {agents.map(a => (
-                    <option key={a.id} value={a.id} className="bg-white text-slate-800">
-                      👤 {a.name} ({a.code})
-                    </option>
-                  ))}
-                </select>*/}
-              </div>
-            ) : (
-              <div className="flex items-center bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-none text-xs font-semibold text-slate-800">
-                <Briefcase className="w-3.5 h-3.5 text-slate-500 mr-2 shrink-0" />
-                <span>👤 {currentUser?.name} ({currentUser?.code})</span>
+          {/* Right side actions */}
+          <div className="flex items-center gap-2">
+            {/* Agent badge (non-admin only) */}
+            {currentUser?.role !== 'admin' && (
+              <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5">
+                <Briefcase className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold text-slate-700">{currentUser?.name}</span>
+                <span className="text-[10px] text-slate-400 font-mono">({currentUser?.code})</span>
               </div>
             )}
 
-            {/* Logout Button */}
+            {/* Hidden admin switcher — logic untouched */}
+            {currentUser?.role === 'admin' && <div className="hidden" />}
+
+            {/* Logout */}
             <button
               onClick={async () => {
                 const { error } = await supabase.auth.signOut();
                 if (error) console.error('Signout error:', error);
               }}
-              className="flex items-center justify-center p-2 text-slate-500 hover:text-orange-500 hover:bg-slate-100 transition rounded-none border border-slate-200 cursor-pointer h-[32px] w-[32px]"
+              className="flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-orange-500 hover:bg-orange-50 border border-slate-200 hover:border-orange-200 transition cursor-pointer"
               title="Se déconnecter"
             >
-              <LogOut className="w-4.5 h-4.5" />
+              <LogOut className="w-4 h-4" />
             </button>
+
+            {/* CTA button */}
             {currentUser?.role !== 'operator' ? (
               <button
                 onClick={() => {
@@ -1322,8 +1340,9 @@ export default function App() {
                   setSelectedClientForDetails(null);
                   setSelectedContract(null);
                 }}
-                className="hidden sm:inline-block bg-orange-500 text-white px-5 py-2 rounded-none font-semibold text-xs shadow-md shadow-orange-500/20 hover:bg-orange-600 transition cursor-pointer"
+                className="hidden sm:flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl font-semibold text-xs shadow-md shadow-orange-500/20 transition cursor-pointer"
               >
+                <PlusCircle className="w-3.5 h-3.5" />
                 Créer un contrat
               </button>
             ) : (
@@ -1333,8 +1352,9 @@ export default function App() {
                   setSelectedClientForDetails(null);
                   setSelectedContract(null);
                 }}
-                className="hidden sm:inline-block bg-orange-500 text-white px-5 py-2 rounded-none font-semibold text-xs shadow-md shadow-orange-500/20 hover:bg-orange-600 transition cursor-pointer"
+                className="hidden sm:flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl font-semibold text-xs shadow-md shadow-orange-500/20 transition cursor-pointer"
               >
+                <PlusCircle className="w-3.5 h-3.5" />
                 Nouvelle Transaction
               </button>
             )}
@@ -1365,7 +1385,7 @@ export default function App() {
               {/* Header block with welcome and description */}
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-5">
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-black tracking-tight font-display text-slate-900 uppercase italic">
+                  <h1 className="text-2xl md:text-3xl font-black tracking-tight font-display text-slate-900 uppercase">
                     Aperçu du compte
                   </h1>
                   <p className="text-slate-500 text-xs mt-1 font-medium">

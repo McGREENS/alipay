@@ -304,26 +304,53 @@ BEGIN
   ON CONFLICT (transaction_ref) DO NOTHING;
 
   -- ─── Insert Delay Records (1) ────────────────────────────────────────
-  INSERT INTO public.delay_records (contract_number, client_id, due_date, amount_usd, days_overdue, status) VALUES
-    ('AM-2026-002', c2, '2026-07-02', 65, 16, 'Actif')
-  ON CONFLICT DO NOTHING;
+  INSERT INTO public.delay_records (contract_number, client_id, due_date, amount_usd, days_overdue, status)
+  SELECT 'AM-2026-002', c2, '2026-07-02', 65, 16, 'Actif'
+  WHERE NOT EXISTS (
+    SELECT 1 FROM public.delay_records WHERE contract_number = 'AM-2026-002' AND status = 'Actif'
+  );
 
   -- ─── Insert Utility Transactions (10) (operator: Blesing) ───────────
-  INSERT INTO public.transactions (
-    client_name, transaction_type, phone_number, amount, currency,
-    operator, operator_transaction_number, reference_number, reason, operator_id
-  ) VALUES
-    ('Samuel Kakule',    'dépôt',  '+243997123456', 25,     'USD', 'Airtel',  'AIR-2026-001', 'AM-TRX-001', 'Dépôt Mobile Money',  a_blesing),
-    ('Aline Kavuo',      'retrait','+243994555666', 15000,  'CDF', 'Vodacom', 'VOD-2026-002', 'AM-TRX-002', 'Retrait M-Pesa',       a_blesing),
-    ('Archange Mwanza',  'dépôt',  '+243971888222', 50,     'USD', 'Voda-e',  'VDE-2026-003', 'AM-TRX-003', 'Dépôt Voda-e',         a_blesing),
-    ('Trésor Amisi',     'retrait','+243991222333', 30,     'USD', 'Airtel',  'AIR-2026-004', 'AM-TRX-004', 'Retrait Airtel Money',  a_blesing),
-    ('Client Passant',   'dépôt',  '+243815000111', 5000,   'CDF', 'Vodacom', 'VOD-2026-005', 'AM-TRX-005', 'Dépôt M-Pesa',         a_blesing),
-    ('Client Passant',   'retrait','+243815000222', 10000,  'CDF', 'Airtel',  'AIR-2026-006', 'AM-TRX-006', 'Retrait Airtel',       a_blesing),
-    ('Samuel Kakule',    'dépôt',  '+243997123456', 15,     'USD', 'Voda-e',  'VDE-2026-007', 'AM-TRX-007', 'Dépôt Voda-e',         a_blesing),
-    ('Aline Kavuo',      'dépôt',  '+243994555666', 20000,  'CDF', 'Vodacom', 'VOD-2026-008', 'AM-TRX-008', 'Dépôt M-Pesa',         a_blesing),
-    ('Client Passant',   'retrait','+243820000333', 45,     'USD', 'Voda-e',  'VDE-2026-009', 'AM-TRX-009', 'Retrait Voda-e',        a_blesing),
-    ('Archange Mwanza',  'dépôt',  '+243971888222', 8000,   'CDF', 'Airtel',  'AIR-2026-010', 'AM-TRX-010', 'Dépôt Airtel',         a_blesing)
-  ON CONFLICT (reference_number) DO NOTHING;
+  -- No unique constraint on reference_number, so guard with NOT EXISTS
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Samuel Kakule','dépôt','+243997123456',25,'USD','Airtel','AIR-2026-001','AM-TRX-001','Dépôt Mobile Money',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-001');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Aline Kavuo','retrait','+243994555666',15000,'CDF','Vodacom','VOD-2026-002','AM-TRX-002','Retrait M-Pesa',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-002');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Archange Mwanza','dépôt','+243971888222',50,'USD','Voda-e','VDE-2026-003','AM-TRX-003','Dépôt Voda-e',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-003');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Trésor Amisi','retrait','+243991222333',30,'USD','Airtel','AIR-2026-004','AM-TRX-004','Retrait Airtel Money',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-004');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Client Passant','dépôt','+243815000111',5000,'CDF','Vodacom','VOD-2026-005','AM-TRX-005','Dépôt M-Pesa',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-005');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Client Passant','retrait','+243815000222',10000,'CDF','Airtel','AIR-2026-006','AM-TRX-006','Retrait Airtel',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-006');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Samuel Kakule','dépôt','+243997123456',15,'USD','Voda-e','VDE-2026-007','AM-TRX-007','Dépôt Voda-e',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-007');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Aline Kavuo','dépôt','+243994555666',20000,'CDF','Vodacom','VOD-2026-008','AM-TRX-008','Dépôt M-Pesa',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-008');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Client Passant','retrait','+243820000333',45,'USD','Voda-e','VDE-2026-009','AM-TRX-009','Retrait Voda-e',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-009');
+
+  INSERT INTO public.transactions (client_name, transaction_type, phone_number, amount, currency, operator, operator_transaction_number, reference_number, reason, operator_id)
+  SELECT 'Archange Mwanza','dépôt','+243971888222',8000,'CDF','Airtel','AIR-2026-010','AM-TRX-010','Dépôt Airtel',a_blesing
+  WHERE NOT EXISTS (SELECT 1 FROM public.transactions WHERE reference_number = 'AM-TRX-010');
 
 END $$;
 
